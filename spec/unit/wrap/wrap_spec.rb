@@ -197,6 +197,17 @@ RSpec.describe Strings::Wrap, ".wrap" do
       ].join("\n"))
     end
 
+    it "wraps when nested ANSI sequences carry resets to the next line" do
+      str = "aaa \e[1m\e[35mbb\e[0m\e[0m aa"
+
+      val = Strings::Wrap.wrap(str, 6)
+
+      expect(val).to eq([
+        "aaa ",
+        "\e[1m\e[35mbb\e[0m\e[0m aa",
+      ].join("\n"))
+    end
+
     it "applies stacked ANSI colors after wrapping" do
       text = "aaaa \e[31mbbbb \e[32mcc"
       expect(Strings::Wrap.wrap(text, 5)).to eq([

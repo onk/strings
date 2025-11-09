@@ -158,7 +158,12 @@ module Strings
             output.insert(-1, ansi_reset) # add reset at the end
           end
         else
-          pending_resets -= 1
+          if ansi[1] > length
+            new_stack.unshift([ansi[0], ansi[1] - length])
+            next
+          else
+            pending_resets -= 1
+          end
         end
 
         output.insert(ansi[1], ansi[0])
