@@ -141,9 +141,14 @@ module Strings
       # Reversed so that string index don't count ansi
       ansi_stack.reverse_each do |ansi|
         if ansi[0] =~ /#{Regexp.quote(ansi_reset)}/
-          pending_resets += 1
-          output.insert(ansi[1], ansi_reset)
-          next
+          if ansi[1] > length
+            new_stack.unshift([ansi[0], ansi[1] - length])
+            next
+          else
+            pending_resets += 1
+            output.insert(ansi[1], ansi_reset)
+            next
+          end
         elsif pending_resets.zero? # ansi without reset
           new_stack.unshift([ansi[0], 0]) # carry over ANSI to the start of next line preserving order
           next if ansi[1] == length
