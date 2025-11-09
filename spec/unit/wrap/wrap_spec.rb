@@ -211,7 +211,7 @@ RSpec.describe Strings::Wrap, ".wrap" do
       expect(val).to eq("\e[32mone\e[0m\n\e[33mtwo\e[0m")
     end
 
-    xit "splits ANSI codes matching wrap width" do
+    it "splits ANSI codes matching wrap width" do
       str = "\e[32mone\e[0m\e[33mtwo\e[0m"
 
       val = Strings::Wrap.wrap(str, 3)
@@ -219,14 +219,14 @@ RSpec.describe Strings::Wrap, ".wrap" do
       expect(val).to eq("\e[32mone\e[0m\n\e[33mtwo\e[0m")
     end
 
-    xit "wraps deeply nested ANSI codes correctly" do
+    it "wraps deeply nested ANSI codes correctly" do
       str = "\e[32mone\e[33mtwo\e[0m\e[0m"
 
       val = Strings::Wrap.wrap(str, 3)
 
       expect(val).to eq([
         "\e[32mone\e[0m",
-        "\e[33mtwo\e[0m",
+        "\e[32m\e[33mtwo\e[0m\e[0m",
       ].join("\n"))
     end
   end
