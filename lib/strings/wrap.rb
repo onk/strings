@@ -135,17 +135,16 @@ module Strings
       new_stack = []
       output          = string.dup
       length          = string.size
-      matched_reset   = false
+      pending_resets  = 0
       ansi_reset      = Strings::ANSI::RESET
 
       # Reversed so that string index don't count ansi
       ansi_stack.reverse_each do |ansi|
         if ansi[0] =~ /#{Regexp.quote(ansi_reset)}/
-          matched_reset = true
+          pending_resets += 1
           output.insert(ansi[1], ansi_reset)
           next
-        elsif !matched_reset # ansi without reset
-          matched_reset = false
+        elsif pending_resets.zero? # ansi without reset
           new_stack.unshift([ansi[0], 0]) # carry over ANSI to the start of next line preserving order
           next if ansi[1] == length
           if output.end_with?(NEWLINE)
@@ -153,6 +152,8 @@ module Strings
           else
             output.insert(-1, ansi_reset) # add reset at the end
           end
+        else
+          pending_resets -= 1
         end
 
         output.insert(ansi[1], ansi[0])

@@ -5,6 +5,7 @@
 ### Fixed
 
 * Fix IndexError in `Strings::Wrap.wrap` and correct ANSI color insertion on wrap (@onk)
+* Track unclosed ANSI sequences to preserve correct color state across wraps (@onk)
 
 ## [v0.2.1] - 2021-03-09
 
