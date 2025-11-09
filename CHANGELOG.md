@@ -1,5 +1,11 @@
 # Change log
 
+## Unreleased
+
+### Fixed
+
+* Fix IndexError in `Strings::Wrap.wrap` and correct ANSI color insertion on wrap (@onk)
+
 ## [v0.2.1] - 2021-03-09
 
 ### Changed
