@@ -186,6 +186,15 @@ RSpec.describe Strings::Wrap, ".wrap" do
       ].join("\n"))
     end
 
+    it "applies stacked ANSI colors after wrapping" do
+      text = "aaaa \e[31mbbbb \e[32mcc"
+      expect(Strings::Wrap.wrap(text, 5)).to eq([
+        "aaaa ",
+        "\e[31mbbbb \e[0m",
+        "\e[31m\e[32mcc\e[0m\e[0m"
+      ].join("\n"))
+    end
+
     it "applies ANSI codes when below wrap width" do
       str = "\e[32mone\e[0m\e[33mtwo\e[0m"
 
