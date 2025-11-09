@@ -60,6 +60,6 @@ RSpec.describe "#insert_ansi" do
     val = Strings::Wrap.insert_ansi(text, stack)
 
     expect(val).to eq("\e[32mone\e[0m")
-    expect(stack).to eq([["\e[33m", 3]])
+    expect(stack).to eq([["\e[33m", 0]])
   end
 end

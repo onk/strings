@@ -146,7 +146,7 @@ module Strings
           next
         elsif !matched_reset # ansi without reset
           matched_reset = false
-          new_stack << ansi # keep the ansi
+          new_stack.unshift([ansi[0], 0]) # carry over ANSI to the start of next line preserving order
           next if ansi[1] == length
           if output.end_with?(NEWLINE)
             output.insert(-2, ansi_reset)

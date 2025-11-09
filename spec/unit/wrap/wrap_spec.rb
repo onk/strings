@@ -178,6 +178,14 @@ RSpec.describe Strings::Wrap, ".wrap" do
       ].join("\n"))
     end
 
+    it "wraps when ANSI start carries over to the next line" do
+      text = "aaaaaaa \e[31mbb"
+      expect(Strings::Wrap.wrap(text, 8)).to eq([
+        "aaaaaaa ",
+        "\e[31mbb\e[0m"
+      ].join("\n"))
+    end
+
     it "applies ANSI codes when below wrap width" do
       str = "\e[32mone\e[0m\e[33mtwo\e[0m"
 
