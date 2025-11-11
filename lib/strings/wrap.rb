@@ -56,22 +56,25 @@ module Strings
       total_length = 0
 
       UnicodeUtils.each_grapheme(text_line) do |char|
-        # we found ansi let's consume
-        if char == Strings::ANSI::CSI || ansi.length > 0
-          ansi << char
-          if Strings::ANSI.only_ansi?(ansi.join)
-            ansi_matched = true
-          elsif ansi_matched
-            ansi_stack << [ansi[0...-1].join, line_length + word_length]
-            ansi_matched = false
+        if ansi_matched
+          ansi_stack << [ansi.join, line_length + word_length]
+          ansi = []
+          ansi_matched = false
+          redo
+        end
 
-            if ansi.last == Strings::ANSI::CSI
-              ansi = [ansi.last]
-            else
-              ansi = []
-            end
+        if ansi.length > 0
+          ansi << char
+          if Strings::ANSI.only_ansi?(ansi.join) && ansi.last =~ /[@-~]/
+            ansi_matched = true
           end
-          next if ansi.length > 0
+          next
+        end
+
+        # start collecting ansi when we hit escape
+        if char == Strings::ANSI::CSI
+          ansi << char
+          next
         end
 
         char_length = display_width(char)
@@ -108,8 +111,17 @@ module Strings
           word_length = char_length
         end
       end
+      if ansi_matched && !ansi.empty?
+        ansi_stack << [ansi.join, line_length + word_length]
+        ansi = []
+        ansi_matched = false
+      end
+
+      unless word.empty?
+        line << word.join
+        word = []
+      end
       lines << insert_ansi(line.join, ansi_stack) unless line.empty?
-      lines << insert_ansi(word.join, ansi_stack) unless word.empty?
       lines
     end
     module_function :format_line
