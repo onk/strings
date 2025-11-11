@@ -251,5 +251,21 @@ RSpec.describe Strings::Wrap, ".wrap" do
         "\e[32m\e[33mtwo\e[0m\e[0m",
       ].join("\n"))
     end
+
+    it "does not drop characters that follow ANSI codes" do
+      str = "\e[33m]\e[0m"
+
+      val = Strings::Wrap.wrap(str, 10)
+
+      expect(val).to eq(str)
+    end
+
+    it "keeps characters adjacent to ANSI codes on the same line" do
+      str = "\e[31mfoo \e[0m\e[32m%i[\e[0m\e[33mbar]\e[0m"
+
+      val = Strings::Wrap.wrap(str, 11)
+
+      expect(val).to eq(str)
+    end
   end
 end
