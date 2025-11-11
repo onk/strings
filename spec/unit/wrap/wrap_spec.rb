@@ -253,6 +253,8 @@ RSpec.describe Strings::Wrap, ".wrap" do
     end
 
     it "does not drop characters that follow ANSI codes" do
+      strict_matcher = "\e\\[[0-9;:?]*[@-~]"
+      stub_const("Strings::ANSI::ANSI_MATCHER", strict_matcher)
       str = "\e[33m]\e[0m"
 
       val = Strings::Wrap.wrap(str, 10)
